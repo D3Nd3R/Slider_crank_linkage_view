@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>579</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0" colspan="3">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="CrankWidget" name="crankWidget" native="true"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="CrankWidget" name="crankWidget_2" native="true"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="CrankWidget" name="crankWidget_3" native="true"/>
+      </item>
+      <item row="0" column="3">
+       <widget class="CrankWidget" name="crankWidget_4" native="true"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="CrankWidget" name="crankWidget_5" native="true"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="CrankWidget" name="crankWidget_6" native="true"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="CrankWidget" name="crankWidget_7" native="true"/>
+      </item>
+      <item row="1" column="3">
+       <widget class="CrankWidget" name="crankWidget_8" native="true"/>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLCDNumber" name="lcdNumber"/>
+    </item>
+    <item row="1" column="1">
+     <widget class="QSlider" name="sld_angle">
+      <property name="minimum">
+       <number>-720</number>
+      </property>
+      <property name="maximum">
+       <number>720</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QCheckBox" name="checBox_isTimerOn">
+      <property name="text">
+       <string>Timer</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>900</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CrankWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">crank_widget.hpp</header>
+   <container>1</container>
+   <slots>
+    <slot>setCrankAngle(int)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>sld_angle</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>lcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>120</x>
+     <y>618</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>56</x>
+     <y>621</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
