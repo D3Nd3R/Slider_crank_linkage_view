@@ -24,6 +24,11 @@ double degToRad(double deg){
     return (deg*M_PI)/180.;
 }
 
+double euclidDist(const QPoint &lhs, const QPoint &rhs){
+    return std::sqrt(std::pow(lhs.x() - rhs.x(),2) +
+                     std::pow(lhs.y() - rhs.y(),2));
+}
+
 using  doubleToInt = decltype(floatPointToIntegral<double,int>(0));
 
 CrankWidget::CrankWidget(QWidget *parent) : QWidget(parent)
@@ -50,6 +55,12 @@ QColor CrankWidget::crankColor() const
 {
     return m_crankColor;
 }
+
+double CrankWidget::crankPhaseShift() const
+{
+    return m_crankPhaseShift;
+}
+
 
 void CrankWidget::setBackgrounColor(QColor backgrounColor)
 {
@@ -93,6 +104,18 @@ void CrankWidget::setCrankColor(QColor crankColor)
 
     m_crankColor = crankColor;
     emit crankColorChanged(m_crankColor);
+    repaint();
+}
+
+void CrankWidget::setCrankPhaseShift(double crankPhaseShift)
+{
+    qWarning("Floating point comparison needs context sanity check");
+    if (qFuzzyCompare(m_crankPhaseShift, crankPhaseShift))
+        return;
+
+    m_crankPhaseShift = crankPhaseShift;
+    emit crankPhaseShiftChanged(m_crankPhaseShift);
+    repaint();
 }
 
 void CrankWidget::paintEvent(QPaintEvent *event)
@@ -116,19 +139,30 @@ void CrankWidget::paintEvent(QPaintEvent *event)
     const QPoint circleCenter {doubleToInt(width() / 2),
                 doubleToInt((5./6.)*heightReal + margin)};
     const int circleRadius {doubleToInt(minSideThird * 0.5)};
-    const int rodLength{circleRadius * 2};
+    const int rodLength{circleRadius * 3};
     Q_UNUSED(rodLength);
 
-    const double angleRad {degToRad(crankAngle() + SHIFT_ANGLE)};
+    const double angleRad {degToRad(crankAngle() + SHIFT_ANGLE + crankPhaseShift())};
     const QPoint crankEndPos{doubleToInt(circleCenter.x() + (circleRadius * std::cos(angleRad))),
                 doubleToInt(circleCenter.y() + (circleRadius * std::sin(angleRad)))};
 
+    // x = r*cos(A) + sqrt(L^2 - (r*sin(A)^2)
+    const double angle = degToRad(crankAngle());
+    const double tmp = circleRadius*std::cos(angle) + std::sqrt(std::pow(rodLength,2) - std::pow(circleRadius*std::sin(angle),2));
+    const QPoint pistonPin{circleCenter.x(),circleCenter.y() - doubleToInt(tmp)};
+
+    const QSize piston(circleRadius * .5,circleRadius);
+
+//    qDebug() << "angle = " << angleRad << " circleRadius = " << circleRadius
+//             << " rodLength = " << rodLength << "   rodLength real = " << euclidDist(crankEndPos,pistonPin);
 
     //draw crank radius and rod
     painter.setBrush(crankColor());
     painter.setPen(QPen(crankColor(),5));
     painter.drawLine(circleCenter,crankEndPos);
+    painter.drawLine(crankEndPos,pistonPin);
 
+    //painter.drawRect()
 
     // Draw crank circle and it's center
     painter.setBrush(noBrush);
