@@ -6,6 +6,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    connect(ui->sld_angle, &QSlider::valueChanged,
+            ui->crankWidget, &CrankWidget::setCrankAngleInt);
 }
 
 MainWindow::~MainWindow()
