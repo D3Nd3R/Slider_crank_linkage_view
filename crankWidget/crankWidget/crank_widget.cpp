@@ -29,6 +29,18 @@ double euclidDist(const QPoint &lhs, const QPoint &rhs){
                      std::pow(lhs.y() - rhs.y(),2));
 }
 
+/**
+ * @brief calcPistonPosition x = r*cos(A) + sqrt(L^2 - (r*sin(A)^2)
+ * @param angle = A
+ * @param circleRadius = r
+ * @param rodLength L
+ * @return x
+ */
+double calcPistonPosition(double angle, double circleRadius, double rodLength){
+    return circleRadius * std::cos(angle) +
+           std::sqrt(std::pow(rodLength, 2) - std::pow(circleRadius * std::sin(angle), 2));
+}
+
 using  doubleToInt = decltype(floatPointToIntegral<double,int>(0));
 
 CrankWidget::CrankWidget(QWidget *parent) : QWidget(parent)
@@ -137,24 +149,21 @@ void CrankWidget::paintEvent(QPaintEvent *event)
     //find center of circle
     const int heightReal {height() - 2*margin};
     const QPoint circleCenter {doubleToInt(width() / 2),
-                doubleToInt((5./6.)*heightReal + margin)};
+                              doubleToInt((5./6.)*heightReal + margin)};
     const int circleRadius {doubleToInt(minSideThird * 0.5)};
-    const int rodLength{circleRadius * 3};
+    const int rodLength{doubleToInt(circleRadius * 2.5)};
     Q_UNUSED(rodLength);
 
     const double angleRad {degToRad(crankAngle() + SHIFT_ANGLE + crankPhaseShift())};
     const QPoint crankEndPos{doubleToInt(circleCenter.x() + (circleRadius * std::cos(angleRad))),
-                doubleToInt(circleCenter.y() + (circleRadius * std::sin(angleRad)))};
+                             doubleToInt(circleCenter.y() + (circleRadius * std::sin(angleRad)))};
 
-    // x = r*cos(A) + sqrt(L^2 - (r*sin(A)^2)
-    const double angle = degToRad(crankAngle());
-    const double tmp = circleRadius*std::cos(angle) + std::sqrt(std::pow(rodLength,2) - std::pow(circleRadius*std::sin(angle),2));
-    const QPoint pistonPin{circleCenter.x(),circleCenter.y() - doubleToInt(tmp)};
+    const QPoint pistonPin{circleCenter.x(),
+                           circleCenter.y() - doubleToInt(calcPistonPosition(degToRad(crankAngle() + crankPhaseShift()),
+                                                                             circleRadius,
+                                                                             rodLength))};
 
-    const QSize piston(circleRadius * .5,circleRadius);
-
-//    qDebug() << "angle = " << angleRad << " circleRadius = " << circleRadius
-//             << " rodLength = " << rodLength << "   rodLength real = " << euclidDist(crankEndPos,pistonPin);
+    const QSize pistonSize(circleRadius * .5,circleRadius);
 
     //draw crank radius and rod
     painter.setBrush(crankColor());
@@ -162,7 +171,10 @@ void CrankWidget::paintEvent(QPaintEvent *event)
     painter.drawLine(circleCenter,crankEndPos);
     painter.drawLine(crankEndPos,pistonPin);
 
-    //painter.drawRect()
+    painter.drawRect(pistonPin.x() - pistonSize.width() / 2,
+                     pistonPin.y() - pistonSize.height(),
+                     pistonSize.width(), pistonSize.height());
+
 
     // Draw crank circle and it's center
     painter.setBrush(noBrush);
