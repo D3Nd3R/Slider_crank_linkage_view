@@ -65,8 +65,5 @@ void MainWindow::on_checBox_isTimerOn_stateChanged(int arg1)
         }
         ui->sld_angle->setEnabled(false);
         timer.start();
-
     }
-
-
 }
