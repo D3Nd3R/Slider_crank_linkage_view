@@ -34,7 +34,7 @@ void MainWindow::initCranks()
     cranks.push_back(ui->crankWidget_8);
 
     for (size_t ii = 0; ii < cranks.size(); ++ii) {
-        cranks[ii]->setCrankPhaseShift(ii * 45);
+        cranks[ii]->setCrankPhaseShift(ii * 45.);
         connect(ui->sld_angle, &QSlider::valueChanged,
                 cranks[ii], &CrankWidget::setCrankAngleInt);
     }

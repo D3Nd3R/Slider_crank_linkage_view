@@ -7,7 +7,7 @@
 
 
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 #include <type_traits>
 
 

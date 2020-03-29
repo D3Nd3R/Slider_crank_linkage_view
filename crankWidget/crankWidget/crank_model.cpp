@@ -1,5 +1,5 @@
 #include "crank_model.hpp"
-#include <math.h>
+#include <cmath>
 
 const double SHIFT_ANGLE = -90.;
 
