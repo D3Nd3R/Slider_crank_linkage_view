@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "crank_model.hpp"
+
 class CrankWidget : public QWidget
 {
     Q_OBJECT
@@ -12,6 +14,9 @@ class CrankWidget : public QWidget
     QColor m_crankColor{0,255,0};
     double m_crankAngle{0.};
     double m_crankPhaseShift{0.};
+
+private:
+    CrankModel crankModel;
 
 public:
     explicit CrankWidget(QWidget *parent = nullptr);
@@ -37,8 +42,8 @@ public slots:
     void setCrankAngle(double crankAngle);
     void setCrankAngleInt(int crankAngle);
     void setCrankColor(QColor crankColor);
-
     void setCrankPhaseShift(double crankPhaseShift);
+    void addCrankAngle(double angle);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
